@@ -1,7 +1,13 @@
 import { fastify } from "fastify";
+import cors from '@fastify/cors';
 import { DatabaseMemory } from "./database-memory.js";
 
 const server = fastify();
+
+await server.register(cors,{
+    origin:'*',
+    methods:['GET']
+})
 
 const database = new DatabaseMemory()
 
@@ -10,15 +16,15 @@ server.get('/times', () => {
 })
 
 server.post('/times', (req, res) => {
-    const { nomeTime, posição, pontos, gols, campeonato, vitórias, derrotas } = req.body
+    const { nomeTime, posicao, pontos, gols, campeonato, vitorias, derrotas } = req.body
 
     database.create({
         nomeTime,
-        posição,
+        posicao,
         pontos,
         gols,
         campeonato,
-        vitórias,
+        vitorias,
         derrotas
     })
 
@@ -27,15 +33,15 @@ server.post('/times', (req, res) => {
 
 server.put('/times/:id', (req, res) => {
    const id = req.params.id
-   const { nomeTime, posição, pontos, gols, campeonato, vitórias, derrotas } = req.body
+   const { nomeTime, posicao, pontos, gols, campeonato, vitorias, derrotas } = req.body
 
    database.update(id, {
         nomeTime,
-        posição,
+        posicao,
         pontos,
         gols,
         campeonato,
-        vitórias,
+        vitorias,
         derrotas
    })
 

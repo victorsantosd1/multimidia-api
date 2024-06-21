@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Times</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <ul class="row">
+      <li class="col-m header" style="text-align: start;">Nome Time</li>
+      <li class="col-l header">Posição:</li>
+      <li class="col-l header">Pontos:</li>
+      <li class="col-l header">Gols:</li>
+      <li class="col-l header">Camp:</li>
+      <li class="col-l header">Vitórias:</li>
+      <li class="col-l header">Derrotas:</li>
+    </ul>
+
+    <div v-for="time in times" :key="time.id">
+      <row :time="time"></row>
+    </div>
+  </div>
+
+  <script type="module">
+    const { createApp } = Vue
+    import Row from './row.js'
+
+    const API_URL = `http://localhost:3333/times`
+
+    createApp({
+      data: () => ({
+        nome: '',
+        times: []
+      }),
+      methods: {
+        async getTimes() {
+          const response = await fetch(API_URL)
+          const data = await response.json()
+
+        
+          this.times = data.times
+
+        }
+      },
+      created() {
+        this.getTimes()
+      },
+      components: {
+        Row
+      },
+    }).mount('#app')
+  </script>
+</body>
+</html>
