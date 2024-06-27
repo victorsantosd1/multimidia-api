@@ -1,6 +1,7 @@
 import { fastify } from "fastify";
 import cors from '@fastify/cors';
-import { DatabaseMemory } from "./database-memory.js";
+import { DatabaseMemory } from "./database/database-memory.js";
+import { DatabaseSql } from "./database/database-sql.js"
 
 const server = fastify();
 
@@ -9,16 +10,16 @@ await server.register(cors,{
     methods:['GET']
 })
 
-const database = new DatabaseMemory()
+const database = new DatabaseSql()
 
-server.get('/times', () => {
-    return database.list()
+server.get('/times', async () => {
+    return await database.list()
 })
 
-server.post('/times', (req, res) => {
+server.post('/times', async (req, res) => {
     const { nomeTime, posicao, pontos, gols, campeonato, vitorias, derrotas } = req.body
 
-    database.create({
+    await database.create({
         nomeTime,
         posicao,
         pontos,
@@ -31,11 +32,11 @@ server.post('/times', (req, res) => {
     return res.status(201).send()
 })
 
-server.put('/times/:id', (req, res) => {
+server.put('/times/:id', async (req, res) => {
    const id = req.params.id
    const { nomeTime, posicao, pontos, gols, campeonato, vitorias, derrotas } = req.body
 
-   database.update(id, {
+   await database.update(id, {
         nomeTime,
         posicao,
         pontos,
@@ -48,9 +49,9 @@ server.put('/times/:id', (req, res) => {
    res.status(204).send()
 })
 
-server.delete('/times/:id', (req, res) => {
+server.delete('/times/:id', async (req, res) => {
     const id = req.params.id
-    database.delete(id)
+    await database.delete(id)
     return res.status(200).send()
 })
 
